@@ -14,12 +14,7 @@ pub fn compare(left_content: String, right_content: String) -> String {
     let left_lines: Vec<&str> = left_content.trim().split('\n').collect();
     let right_lines: Vec<&str> = right_content.trim().split('\n').collect();
 
-    let max = left_lines
-        .iter()
-        .max_by(|x, y| x.len().cmp(&y.len()))
-        .unwrap()
-        .len();
-
+    let max = max(&left_lines);
     let mut result = String::new();
     left_lines
         .iter()
@@ -45,6 +40,19 @@ pub fn compare(left_content: String, right_content: String) -> String {
     }
 
     result
+}
+
+/// Get max length of &strs in a &Vec
+/// ```
+/// use ldiff::max;
+/// let strings = vec!["a", "ab", "abc", "d"];
+/// assert_eq!(3, max(&strings));
+/// ```
+pub fn max(list: &Vec<&str>) -> usize {
+    list.iter()
+        .max_by(|x, y| x.len().cmp(&y.len()))
+        .unwrap()
+        .len()
 }
 
 #[test]

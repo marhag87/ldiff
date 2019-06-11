@@ -1,6 +1,6 @@
 use clap::{App, Arg};
 use ldiff::compare;
-use std::fs;
+use std::{fs, process};
 
 fn main() {
     let matches = App::new("ldiff")
@@ -11,13 +11,16 @@ fn main() {
         .arg(Arg::with_name("right").required(true))
         .get_matches();
 
-    let file_left = matches.value_of("left").unwrap();
-    let file_right = matches.value_of("right").unwrap();
-    let left_content =
-        fs::read_to_string(file_left).expect(&format!("Could not read file: {}", file_left));
-    let right_content =
-        fs::read_to_string(file_right).expect(&format!("Could not read file: {}", file_right));
+    let left_content = read_file(matches.value_of("left").unwrap());
+    let right_content = read_file(matches.value_of("right").unwrap());
 
     let result = compare(left_content, right_content);
     print!("{}", result);
+}
+
+fn read_file(filename: &str) -> String {
+    fs::read_to_string(filename).unwrap_or_else(|err| {
+        eprintln!("Could not read \"{}\":\n{}", filename, err);
+        process::exit(1)
+    })
 }

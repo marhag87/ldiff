@@ -16,7 +16,6 @@ pub fn compare(left_content: String, right_content: String) -> String {
 
     let max = left_lines
         .iter()
-        .chain(right_lines.iter())
         .max_by(|x, y| x.len().cmp(&y.len()))
         .unwrap()
         .len();
@@ -62,6 +61,24 @@ fn left_short() {
     let left = "asd".to_string();
     let right = "asd\n123\n".to_string();
     let expected = "asd = asd\n    | 123\n".to_string();
+    let actual = compare(left, right);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn fill_long_left() {
+    let left = "asdasdasdasdasdasd".to_string();
+    let right = "asd".to_string();
+    let expected = "asdasdasdasdasdasd | asd\n".to_string();
+    let actual = compare(left, right);
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn fill_long_right() {
+    let left = "asd".to_string();
+    let right = "asdasdasdasdasdasd".to_string();
+    let expected = "asd | asdasdasdasdasdasd\n".to_string();
     let actual = compare(left, right);
     assert_eq!(expected, actual);
 }
